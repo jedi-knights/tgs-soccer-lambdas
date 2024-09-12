@@ -123,6 +123,13 @@ To delete the sample application that you created, use the AWS CLI. Assuming you
 sam delete --stack-name "tgs-soccer-lambdas"
 ```
 
+Commands you can use next
+=========================
+[*] Create pipeline: cd tgs-soccer-lambdas && sam pipeline init --bootstrap
+[*] Validate SAM template: cd tgs-soccer-lambdas && sam validate
+[*] Test Function in the Cloud: cd tgs-soccer-lambdas && sam sync --stack-name {stack-name} --watch
+
+
 ## Resources
 
 See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.
