@@ -129,6 +129,41 @@ Commands you can use next
 [*] Validate SAM template: cd tgs-soccer-lambdas && sam validate
 [*] Test Function in the Cloud: cd tgs-soccer-lambdas && sam sync --stack-name {stack-name} --watch
 
+```text
+aws-lambda-soccer/
+│
+├── functions/
+│   ├── get_states/
+│   │   ├── app.py              # Lambda function to fetch states data
+│   │   ├── requirements.txt    # Dependencies for the get_states function
+│   │   └── .env                # Environment variables (e.g., API keys)
+│   ├── get_countries/
+│   │   ├── app.py              # Lambda function to fetch countries data
+│   │   ├── requirements.txt    # Dependencies for the get_countries function
+│   ├── get_organizations/
+│   │   ├── app.py              # Lambda function to fetch organizations
+│   │   ├── requirements.txt    # Dependencies for the get_organizations function
+│   ├── get_clubs_in_organization/
+│   │   ├── app.py              # Lambda function to fetch clubs within an organization
+│   │   ├── requirements.txt    # Dependencies for the get_clubs_in_organization function
+│   ├── get_match_records/
+│   │   ├── app.py              # Lambda function to fetch match records between two dates
+│   │   ├── requirements.txt    # Dependencies for the get_match_records function
+│   └── ...
+│
+├── common/
+│   ├── total_global_sports_api.py  # Code to handle the API interaction with Total Global Sports
+│   ├── config.py                  # Configuration shared across multiple functions
+│   └── utils.py                   # Utility functions (e.g., date formatting, validation)
+│
+├── deploy/
+│   ├── sam-template.yaml           # AWS SAM template for deploying the Lambda functions
+│   └── serverless.yml              # Optional: if using the Serverless Framework
+│
+├── .gitignore                      # Ignore unnecessary files (e.g., .env, __pycache__)
+├── README.md                       # Description of the repository and usage
+└── requirements.txt                # Optional: top-level dependencies for all Lambda functions
+```
 
 ## Resources
 
