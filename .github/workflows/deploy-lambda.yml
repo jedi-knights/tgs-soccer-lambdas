@@ -33,14 +33,14 @@ jobs:
         run: |
           cp -r dependencies/* lambda_functions/get_clubs_by_organization/ > /dev/null 2>&1
           cd lambda_functions/get_clubs_by_organization/
-          zip -r ../../get_clubs_by_organization.zip .
+          zip -r ../../get_clubs_by_organization.zip . > /dev/null 2>&1
         working-directory: .
 
       - name: Package get_countries
         run: |
           cp -r dependencies/* lambda_functions/get_countries/ > /dev/null 2>&1
           cd lambda_functions/get_countries/
-          zip -r ../../get_countries.zip .
+          zip -r ../../get_countries.zip . > /dev/null 2>&1
         working-directory: .
 
       # Repeat for other Lambda functions
@@ -48,28 +48,28 @@ jobs:
         run: |
           cp -r dependencies/* lambda_functions/get_match_records/ > /dev/null 2>&1
           cd lambda_functions/get_match_records/
-          zip -r ../../get_match_records.zip .
+          zip -r ../../get_match_records.zip . > /dev/null 2>&1
         working-directory: .
 
       - name: Package get_organizations
         run: |
           cp -r dependencies/* lambda_functions/get_organizations/ > /dev/null 2>&1
           cd lambda_functions/get_organizations/
-          zip -r ../../get_organizations.zip .
+          zip -r ../../get_organizations.zip . > /dev/null 2>&1
         working-directory: .
 
       - name: Package get_states
         run: |
           cp -r dependencies/* lambda_functions/get_states/ > /dev/null 2>&1
           cd lambda_functions/get_states/
-          zip -r ../../get_states.zip .
+          zip -r ../../get_states.zip . > /dev/null 2>&1
         working-directory: .
 
       # Step 5: Package Lambda Layer (if using a layer for shared code)
       - name: Package Lambda Layer
         run: |
           cd common/
-          zip -r ../common_layer.zip .
+          zip -r ../common_layer.zip . > /dev/null 2>&1
         working-directory: .
 
       # Step 6: AWS CloudFormation Package and Deploy
