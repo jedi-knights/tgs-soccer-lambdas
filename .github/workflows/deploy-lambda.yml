@@ -23,22 +23,22 @@ jobs:
       # Step 3: Install global dependencies
       - name: Install global dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements.txt -t dependencies/
         working-directory: .
 
       # Step 4: Package Lambda functions
-      # Loop through each Lambda function directory, install dependencies, and zip the code
+      # Loop through each Lambda function directory, copy dependencies, and zip the code
 
       - name: Package get_clubs_by_organization
         run: |
-          pip install -r requirements.txt -t lambda_functions/get_clubs_by_organization/
+          cp -r dependencies/* lambda_functions/get_clubs_by_organization/
           cd lambda_functions/get_clubs_by_organization/
           zip -r ../../get_clubs_by_organization.zip .
         working-directory: .
 
       - name: Package get_countries
         run: |
-          pip install -r requirements.txt -t lambda_functions/get_countries/
+          cp -r dependencies/* lambda_functions/get_countries/
           cd lambda_functions/get_countries/
           zip -r ../../get_countries.zip .
         working-directory: .
@@ -46,21 +46,21 @@ jobs:
       # Repeat for other Lambda functions
       - name: Package get_match_records
         run: |
-          pip install -r requirements.txt -t lambda_functions/get_match_records/
+          cp -r dependencies/* lambda_functions/get_match_records/
           cd lambda_functions/get_match_records/
           zip -r ../../get_match_records.zip .
         working-directory: .
 
       - name: Package get_organizations
         run: |
-          pip install -r requirements.txt -t lambda_functions/get_organizations/
+          cp -r dependencies/* lambda_functions/get_organizations/
           cd lambda_functions/get_organizations/
           zip -r ../../get_organizations.zip .
         working-directory: .
 
       - name: Package get_states
         run: |
-          pip install -r requirements.txt -t lambda_functions/get_states/
+          cp -r dependencies/* lambda_functions/get_states/
           cd lambda_functions/get_states/
           zip -r ../../get_states.zip .
         working-directory: .
