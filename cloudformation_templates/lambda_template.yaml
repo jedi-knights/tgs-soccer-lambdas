@@ -1,0 +1,165 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for TGS Lambda functions
+
+Resources:
+
+  # Lambda Layer for Shared Code (Optional)
+  MyCommonLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties: 
+      LayerName: common-code-layer
+      Content:
+        S3Bucket: !Ref S3BucketName
+        S3Key: common_layer.zip
+      CompatibleRuntimes: 
+        - python3.9
+
+  # IAM Role for Lambda Functions
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaBasicExecution
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  # Lambda Function: get_clubs_by_organization
+  TGSGetClubsByOrganization:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: get_clubs_by_organization
+      Handler: app.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: get_clubs_by_organization.zip
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 15
+      Layers:
+        - !Ref MyCommonLayer # Optional, only if you're using layers
+      Environment:
+        Variables:
+          ENV: production
+          LOG_LEVEL: info
+
+  # Lambda Function: get_countries
+  TGSGetCountries:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: get_countries
+      Handler: app.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: get_countries.zip
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 15
+      Layers:
+        - !Ref MyCommonLayer
+      Environment:
+        Variables:
+          ENV: production
+          LOG_LEVEL: info
+
+  # Lambda Function: get_match_records
+  TGSGetMatchRecords:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: get_match_records
+      Handler: app.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: get_match_records.zip
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 15
+      Layers:
+        - !Ref MyCommonLayer
+      Environment:
+        Variables:
+          ENV: production
+          LOG_LEVEL: info
+
+  # Lambda Function: get_organizations
+  TGSGetOrganizations:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: get_organizations
+      Handler: app.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: get_organizations.zip
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 15
+      Layers:
+        - !Ref MyCommonLayer
+      Environment:
+        Variables:
+          ENV: production
+          LOG_LEVEL: info
+
+  # Lambda Function: get_states
+  TGSGetStates:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: get_states
+      Handler: app.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: get_states.zip
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 15
+      Layers:
+        - !Ref MyCommonLayer
+      Environment:
+        Variables:
+          ENV: production
+          LOG_LEVEL: info
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: Name of the S3 bucket that holds the Lambda deployment packages
+
+Outputs:
+  ClubsByOrganizationFunctionArn:
+    Description: "ARN for get_clubs_by_organization function"
+    Value: !GetAtt TGSGetClubsByOrganization.Arn
+
+  CountriesFunctionArn:
+    Description: "ARN for get_countries function"
+    Value: !GetAtt TGSGetCountries.Arn
+
+  MatchRecordsFunctionArn:
+    Description: "ARN for get_match_records function"
+    Value: !GetAtt TGSGetMatchRecords.Arn
+
+  OrganizationsFunctionArn:
+    Description: "ARN for get_organizations function"
+    Value: !GetAtt TGSGetOrganizations.Arn
+
+  StatesFunctionArn:
+    Description: "ARN for get_states function"
+    Value: !GetAtt TGSGetStates.Arn

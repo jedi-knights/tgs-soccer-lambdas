@@ -1,5 +1,52 @@
 # tgs-soccer-lambdas
 
+## Directory Structure
+
+```plaintext
+lambda-cloudformation-deployment/
+├── common/
+│   ├── __init__.py            # Common code for all Lambdas
+│   └── utils.py               # Utility functions shared across Lambdas
+├── lambda_functions/
+│   ├── tgs_get_clubs_by_organization/
+│   │   └── app.py             # Code for tgs_get_clubs_by_organization Lambda
+│   ├── tgs_get_countries/
+│   │   └── app.py             # Code for tgs_get_countries Lambda
+│   ├── tgs_get_match_records/
+│   │   └── app.py             # Code for tgs_get_match_records Lambda
+│   ├── tgs_get_organizations/
+│   │   └── app.py             # Code for tgs_get_organizations Lambda
+│   └── tgs_get_states/
+│       └── app.py             # Code for tgs_get_states Lambda
+├── cloudformation_templates/
+│   ├── lambda_template.yaml   # CloudFormation template for Lambda functions
+│   └── layer_template.yaml    # CloudFormation template for the common layer (if using layers)
+├── .github/
+│   └── workflows/
+│       └── deploy-lambda.yml  # GitHub Actions workflow for Lambda deployment
+├── README.md                  # Documentation
+├── requirements.txt           # Python dependencies (optional)
+└── setup.py                   # Package setup (if needed)
+```
+
+
+I am opting to share dependencies across all my lambda functions so I will have a single requirements.txt file at the 
+root of my repository.
+
+When deploying, I will install the dependencies and package them with each Lambda function:
+
+```shell
+pip install -r requirements.txt -t lambda_functions/get_clubs_by_organization/
+cd lambda_functions/get_clubs_by_organization/
+zip -r my_function.zip .
+```
+
+When you zip your Lambda function, include the common directory:
+
+```shell
+zip -r my_function.zip lambda_functions/my_function/ common/
+```
+
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
 
 - hello_world - Code for the application's Lambda function.
@@ -38,7 +85,7 @@ To build and deploy your application for the first time, run the following in yo
 
 ```bash
 sam build --use-container
-sam deploy --guided
+sam cloudformation_templates --guided
 ```
 
 The first command will build the source of your application. The second command will package and deploy your application to AWS, with a series of prompts:

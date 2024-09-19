@@ -1,0 +1,109 @@
+# This GitHub Actions workflow automates the packaging and deployment of AWS Lambda functions
+# using CloudFormation. The workflow is triggered on pushes to the 'main' branch.
+#
+# Required Environment Variables (GitHub Secrets):
+# - AWS_ACCESS_KEY_ID: The AWS access key ID with permissions to deploy Lambda functions and CloudFormation stacks.
+# - AWS_SECRET_ACCESS_KEY: The AWS secret access key corresponding to the above access key.
+# - S3_BUCKET_NAME: The S3 bucket name where the Lambda function packages will be uploaded.
+# - AWS_REGION (optional): The AWS region where Lambda functions and CloudFormation stacks will be deployed. Defaults to 'us-east-1' if not provided.
+#
+# Note: Ensure that the IAM role associated with the AWS credentials has the necessary permissions to create/update
+# AWS Lambda functions, S3 uploads, and manage CloudFormation stacks.
+
+name: Deploy Lambda Functions
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow only on push to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      # Step 3: Install dependencies (if needed for the whole project)
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt  # If you have a global requirements.txt
+        working-directory: .
+
+      # Step 4: Package Lambda functions
+      # Loop through each Lambda function directory, install dependencies, and zip the code
+
+      - name: Package get_clubs_by_organization
+        run: |
+          pip install -r lambda_functions/get_clubs_by_organization/requirements.txt -t lambda_functions/get_clubs_by_organization/
+          cd lambda_functions/get_clubs_by_organization/
+          zip -r ../../get_clubs_by_organization.zip .
+        working-directory: .
+
+      - name: Package get_countries
+        run: |
+          pip install -r lambda_functions/get_countries/requirements.txt -t lambda_functions/get_countries/
+          cd lambda_functions/get_countries/
+          zip -r ../../get_countries.zip .
+        working-directory: .
+
+      # Repeat for other Lambda functions
+      - name: Package get_match_records
+        run: |
+          pip install -r lambda_functions/get_match_records/requirements.txt -t lambda_functions/get_match_records/
+          cd lambda_functions/get_match_records/
+          zip -r ../../get_match_records.zip .
+        working-directory: .
+
+      - name: Package get_organizations
+        run: |
+          pip install -r lambda_functions/get_organizations/requirements.txt -t lambda_functions/get_organizations/
+          cd lambda_functions/get_organizations/
+          zip -r ../../get_organizations.zip .
+        working-directory: .
+
+      - name: Package get_states
+        run: |
+          pip install -r lambda_functions/get_states/requirements.txt -t lambda_functions/get_states/
+          cd lambda_functions/get_states/
+          zip -r ../../get_states.zip .
+        working-directory: .
+
+      # Step 5: Package Lambda Layer (if using a layer for shared code)
+      - name: Package Lambda Layer
+        run: |
+          cd common/
+          zip -r ../common_layer.zip .
+        working-directory: .
+
+      # Step 6: AWS CloudFormation Package and Deploy
+      # First package CloudFormation template to handle S3 uploads
+
+      - name: Package and deploy CloudFormation stack
+        run: |
+          aws cloudformation package \
+            --template-file cloudformation_templates/lambda_template.yaml \
+            --s3-bucket ${{ secrets.S3_BUCKET_NAME }} \
+            --output-template-file cloudformation_templates/packaged_template.yaml
+
+          aws cloudformation deploy \
+            --template-file cloudformation_templates/packaged_template.yaml \
+            --stack-name tgs-lambda-stack \
+            --capabilities CAPABILITY_IAM
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+
+      # Step 7: Post-deployment cleanup (optional)
+      - name: Cleanup
+        run: |
+          rm *.zip  # Remove all the zip files created during the workflow

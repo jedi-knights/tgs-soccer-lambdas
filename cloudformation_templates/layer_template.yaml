@@ -1,0 +1,12 @@
+Resources:
+  TGSGetClubsByOrganizationFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: app.handler
+      Role: arn:aws:iam::123456789012:role/execution_role
+      Code:
+        S3Bucket: my-lambda-deployment-bucket
+        S3Key: lambda_functions/tgs_get_clubs_by_organization.zip
+      Runtime: python3.9
+      Layers:
+        - !Ref MyCommonLayer
