@@ -12,10 +12,11 @@ setup(
     description="AWS Lambda functions to retrieve Soccer data",  # Brief description
     long_description=long_description,  # From README.md
     long_description_content_type="text/markdown",  # If you're using Markdown for README
-    url="https://github.com/yourusername/lambda-cloudformation-deployment",  # GitHub URL
+    url="https://github.com/jedi-knights/tgs-soccer-lambdas",  # GitHub URL
     packages=find_packages(),  # Automatically find packages in this directory
     install_requires=[
         # Add your dependencies here. These will be installed via `pip`
+        "bs4",
         "boto3",  # Example dependency
         "requests",  # Example dependency
     ],
