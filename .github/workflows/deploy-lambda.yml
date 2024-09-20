@@ -1,3 +1,10 @@
+# Required Environment Variables:
+#
+# AWS_ACCESS_KEY_ID: Your AWS access key ID. This is used to authenticate with AWS services.
+# AWS_SECRET_ACCESS_KEY: Your AWS secret access key. This is used in conjunction with the access key ID to authenticate with AWS services.
+# AWS_REGION: The AWS region where your resources are located (e.g., us-east-1).
+# S3_BUCKET_NAME: The name of the S3 bucket where the Lambda deployment packages will be stored.
+
 name: Deploy Lambda Functions
 
 on:
