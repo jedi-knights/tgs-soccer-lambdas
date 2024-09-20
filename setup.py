@@ -4,6 +4,17 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+# Read the requirements.txt file
+with open("requirements.txt", "r") as fh:
+    requirements = fh.readlines()
+
+# Filter non-development dependencies
+non_dev_requirements = [
+    req.strip() for req in requirements if req.strip() and not req.startswith((
+        "pytest", "pylint", "flake8", "black", "mypy"
+    ))
+]
+
 setup(
     name="tgs_soccer_lambdas",  # Package name
     version="0.1.0",  # Initial version
@@ -14,12 +25,7 @@ setup(
     long_description_content_type="text/markdown",  # If you're using Markdown for README
     url="https://github.com/jedi-knights/tgs-soccer-lambdas",  # GitHub URL
     packages=find_packages(),  # Automatically find packages in this directory
-    install_requires=[
-        # Add your dependencies here. These will be installed via `pip`
-        "bs4",
-        "boto3",  # Example dependency
-        "requests",  # Example dependency
-    ],
+    install_requires=non_dev_requirements,
     classifiers=[
         "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: MIT License",
