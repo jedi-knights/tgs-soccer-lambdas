@@ -82,15 +82,22 @@ jobs:
       # Step 6: AWS CloudFormation Package and Deploy
       # First package CloudFormation template to handle S3 uploads
 
-      - name: Package and deploy CloudFormation stack
+      - name: Package CloudFormation Stack
         run: |
           aws cloudformation package \
             --template-file cloudformation_templates/lambda_template.yaml \
             --s3-bucket ${{ secrets.S3_BUCKET_NAME }} \
             --output-template-file cloudformation_templates/packaged_template.yaml
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
 
+      - name: Deploy CloudFormation Stack
+        run: |
           aws cloudformation deploy \
-            --template-file cloudformation_templates/packaged_template.yaml \
+            --template-file cloudformation_templates/lambda_template.yaml \
             --stack-name tgs-soccer-lambda-stack \
             --capabilities CAPABILITY_IAM
             --parameter-overrides S3BucketName=${{ secrets.S3_BUCKET_NAME }}
