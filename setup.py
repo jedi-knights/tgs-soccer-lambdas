@@ -11,7 +11,7 @@ with open("requirements.txt", "r") as fh:
 # Filter non-development dependencies
 non_dev_requirements = [
     req.strip() for req in requirements if req.strip() and not req.startswith((
-        "pytest", "pylint", "flake8", "black", "mypy"
+        "pytest", "pylint", "flake8", "black", "mypy", "setuptools"
     ))
 ]
 
