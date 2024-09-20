@@ -91,8 +91,9 @@ jobs:
 
           aws cloudformation deploy \
             --template-file cloudformation_templates/packaged_template.yaml \
-            --stack-name tgs-lambda-stack \
+            --stack-name tgs-soccer-lambda-stack \
             --capabilities CAPABILITY_IAM
+            --parameter-overrides S3BucketName=${{ secrets.S3_BUCKET_NAME }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
