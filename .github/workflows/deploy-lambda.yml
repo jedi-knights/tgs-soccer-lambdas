@@ -16,6 +16,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      PYTHON_VERSION: '3.12'
+
     steps:
       # Step 1: Checkout the repository
       - name: Checkout code
@@ -25,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: ${{ env.PYTHON_VERSION }}
 
       # Step 3: Install global dependencies
       - name: Install global dependencies
