@@ -1,4 +1,3 @@
-from common import utils
 from common.models import Country
 
 def dict_to_country(data: dict) -> Country:

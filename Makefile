@@ -10,7 +10,7 @@ install:
 	pip3 install -r requirements.txt
 
 lint:
-	pylint
+	pylint common/ lambda_functions/ tests/ setup.py
 
 test:
 	pytest

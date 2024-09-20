@@ -1,3 +1,6 @@
+"""
+Test the common.converters.country module.
+"""
 import pytest
 
 from common.converters import dict_to_country
@@ -10,6 +13,13 @@ from common.models import Country
     (None, pytest.raises(ValueError, match="Data cannot be None"))
 ])
 def test_dict_to_country(data, expected):
+    """
+    Test the dict_to_country function.
+
+    :param data: The data to convert.
+    :param expected: The expected result.
+    :return: None
+    """
     if isinstance(expected, Country):
         country = dict_to_country(data)
         assert isinstance(country, Country)

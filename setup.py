@@ -1,11 +1,14 @@
+"""
+This module contains setuptools configuration for the package.
+"""
 from setuptools import setup, find_packages
 
 # Read the README file for long description (optional)
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # Read the requirements.txt file
-with open("requirements.txt", "r") as fh:
+with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.readlines()
 
 # Filter non-development dependencies
