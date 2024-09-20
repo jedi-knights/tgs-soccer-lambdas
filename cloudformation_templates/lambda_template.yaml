@@ -1,8 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template for TGS Lambda functions
 
-Resources:
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: Name of the S3 bucket that holds the Lambda deployment packages
 
+Resources:
   # Lambda Layer for Shared Code (Optional)
   MyCommonLayer:
     Type: AWS::Lambda::LayerVersion
@@ -138,10 +142,6 @@ Resources:
           ENV: production
           LOG_LEVEL: info
 
-Parameters:
-  S3BucketName:
-    Type: String
-    Description: Name of the S3 bucket that holds the Lambda deployment packages
 
 Outputs:
   ClubsByOrganizationFunctionArn:

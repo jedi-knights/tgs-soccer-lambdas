@@ -99,7 +99,7 @@ jobs:
           aws cloudformation deploy \
             --template-file cloudformation_templates/lambda_template.yaml \
             --stack-name tgs-soccer-lambda-stack \
-            --capabilities CAPABILITY_IAM
+            --capabilities CAPABILITY_IAM \
             --parameter-overrides S3BucketName=${{ secrets.S3_BUCKET_NAME }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
