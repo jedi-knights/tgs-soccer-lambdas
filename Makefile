@@ -29,4 +29,6 @@ build:
 	$(BUILDER) build-project
 
 clean:
+	rm -f *.zip
+	rm -rf dependencies/
 	$(BUILDER) clean-project

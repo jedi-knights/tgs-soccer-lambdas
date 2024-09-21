@@ -75,60 +75,6 @@ def cli():
 
 
 @cli.command()
-def create_env():
-    """Create a virtual environment."""
-    try:
-        subprocess.run(["python3", "-m", "venv", ".venv"], check=True)
-    except subprocess.CalledProcessError as err:
-        click.echo(f"Failed to create virtual environment: {err}")
-
-@cli.command()
-def install_deps():
-    """Install dependencies."""
-    try:
-        subprocess.run(["pip3", "install", "--upgrade", "pip"], check=True)
-        subprocess.run(["pip3", "install", "-r", "requirements.txt"], check=True)
-    except subprocess.CalledProcessError as err:
-        click.echo(f"Failed to install dependencies: {err}")
-
-@cli.command()
-def run_lint():
-    """Run pylint on the project."""
-    args = [
-        "pylint",
-        "common/",
-        "lambda_functions/",
-        "tests/",
-        "scripts/",
-        "setup.py"
-    ]
-
-    try:
-        subprocess.run(args, check=True)
-    except subprocess.CalledProcessError as err:
-        click.echo(f"Linting failed: {err}")
-
-@cli.command()
-def run_tests():
-    """Run tests using pytest."""
-    try:
-        subprocess.run(["pytest"], check=True)
-    except subprocess.CalledProcessError as err:
-        click.echo(f"Tests failed: {err}")
-
-@cli.command()
-def freeze_deps():
-    """Freeze the current environment's packages to requirements.txt."""
-    try:
-        with open("requirements.txt", "w", encoding="utf-8") as requirements:
-            with subprocess.Popen(["pip3", "freeze"], stdout=requirements) as result:
-                result.wait()
-                click.echo("Successfully froze dependencies.")
-    except subprocess.CalledProcessError as err:
-        click.echo(f"Failed to freeze dependencies: {err}")
-
-
-@cli.command()
 def package_project():
     """Package the project."""
     try:
@@ -163,9 +109,7 @@ def package_project():
 def build_project():
     """Build the project."""
     clean_project()
-    install_deps()
-    run_lint()
-    run_tests()
+    package_project()
 
 @cli.command()
 def clean_project():
@@ -198,7 +142,6 @@ def clean_project():
     ]
 
     try:
-        remove_files_by_pattern(["*.zip", "dependencies/"])
         remove_dist_info_dirs()
         remove_specific_dirs(specific_dirs)
         remove_specific_files(specific_files)
