@@ -120,8 +120,8 @@ def run_tests():
 def freeze_deps():
     """Freeze the current environment's packages to requirements.txt."""
     try:
-        with open("requirements.txt", "w", encoding="utf-8") as f:
-            with subprocess.Popen(["pip3", "freeze"], stdout=f) as result:
+        with open("requirements.txt", "w", encoding="utf-8") as requirements:
+            with subprocess.Popen(["pip3", "freeze"], stdout=requirements) as result:
                 result.wait()
                 click.echo("Successfully froze dependencies.")
     except subprocess.CalledProcessError as err:
@@ -147,9 +147,9 @@ def package_project():
         shutil.make_archive("common_layer", "zip", "common")
 
         lambda_dirs = []
-        for d in os.listdir("lambda_functions"):
-            if os.path.isdir(os.path.join("lambda_functions", d)):
-                lambda_dirs.append(d)
+        for item in os.listdir("lambda_functions"):
+            if os.path.isdir(os.path.join("lambda_functions", item)):
+                lambda_dirs.append(item)
 
         for lambda_dir in lambda_dirs:
             src = "dependencies"
