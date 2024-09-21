@@ -36,6 +36,12 @@ jobs:
           make install
         working-directory: .
 
+      # Step 4: Lint code
+      - name: Lint code
+        run: |
+          make lint
+          working-directory: .
+
       # Step 4: Package Lambda functions and Common Layer
       - name: Package Lambda Functions
         run: |
