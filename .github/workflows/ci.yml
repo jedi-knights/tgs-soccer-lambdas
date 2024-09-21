@@ -29,15 +29,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          make install
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pylint pytest
         working-directory: .
 
       - name: Lint code
         run: |
-          make lint
+          pylint common/ lambda_functions/ tests/ scripts/ setup.py
         working-directory: .
 
       - name: Run tests
         run: |
-          make test
+          pytest tests/
         working-directory: .
