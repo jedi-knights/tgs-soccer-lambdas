@@ -30,10 +30,10 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      # Step 3: Install global dependencies
-      - name: Install global dependencies
+      # Step 3: Install dependencies
+      - name: Install dependencies
         run: |
-          pip install -r requirements.txt -t dependencies/
+          make install
         working-directory: .
 
       # Step 4: Package Lambda functions and Common Layer

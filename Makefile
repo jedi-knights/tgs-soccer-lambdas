@@ -8,7 +8,8 @@ env:
 	$(BUILDER) create-env
 
 install:
-	$(BUILDER) install-deps
+	pip3 install --upgrade pip
+	pip3 install -r requirements-dev.txt
 
 lint:
 	$(BUILDER) run-lint
