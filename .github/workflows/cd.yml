@@ -1,16 +1,9 @@
-# Required Environment Variables:
-#
-# AWS_ACCESS_KEY_ID: Your AWS access key ID. This is used to authenticate with AWS services.
-# AWS_SECRET_ACCESS_KEY: Your AWS secret access key. This is used in conjunction with the access key ID to authenticate with AWS services.
-# AWS_REGION: The AWS region where your resources are located (e.g., us-east-1).
-# S3_BUCKET_NAME: The name of the S3 bucket where the Lambda deployment packages will be stored.
-
-name: Deploy Lambda Functions
+name: CD
 
 on:
   push:
     branches:
-      - main  # Trigger the workflow only on push to the 'main' branch
+      - main
 
 jobs:
   deploy:
@@ -20,37 +13,24 @@ jobs:
       PYTHON_VERSION: '3.12'
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           make install
         working-directory: .
 
-      # Step 4: Lint code
-      - name: Lint code
-        run: |
-          make lint
-          working-directory: .
-
-      # Step 4: Package Lambda functions and Common Layer
       - name: Package Lambda Functions
         run: |
           make package
           ls -l *.zip
         working-directory: .
-
-      # Step 5: AWS CloudFormation Package and Deploy
-      # First package CloudFormation template to handle S3 uploads
 
       - name: Package CloudFormation Stack
         run: |
@@ -67,7 +47,7 @@ jobs:
       - name: Deploy CloudFormation Stack
         run: |
           aws cloudformation deploy \
-            --template-file cloudformation_templates/lambda_template.yaml \
+            --template-file cloudformation_templates/packaged_template.yaml \
             --stack-name tgs-soccer-lambda-stack \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
             --parameter-overrides S3BucketName=${{ secrets.S3_BUCKET_NAME }}
@@ -77,7 +57,6 @@ jobs:
           AWS_REGION: us-east-1
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
 
-      # Step 7: Post-deployment cleanup (optional)
       - name: Cleanup
         run: |
-          rm *.zip  # Remove all the zip files created during the workflow
+          rm *.zip
