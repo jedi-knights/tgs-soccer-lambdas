@@ -36,7 +36,7 @@ jobs:
 
       - name: Lint code
         run: |
-          pylint common/ lambda_functions/ tests/ scripts/ setup.py
+          make lint
         working-directory: .
 
       - name: Run tests

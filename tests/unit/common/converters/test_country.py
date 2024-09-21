@@ -4,8 +4,8 @@ Test the common.converters.country module.
 import pytest
 
 from common.converters import dict_to_country
-from common.models import Country
 from common.exceptions import DataValidationError
+from common.models import Country
 
 @pytest.mark.parametrize("data, expected", [
     (

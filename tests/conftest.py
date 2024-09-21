@@ -1,9 +1,16 @@
+"""
+This file contains fixtures and hooks that are used by pytest to setup the test environment.
+"""
+
 # tests/conftest.py
 import logging
 import pytest
 
 @pytest.fixture
 def test_logger():
+    """
+    Create a logger for testing
+    """
     logger = logging.getLogger('test_logger')
     logger.setLevel(logging.DEBUG)
     handler = logging.StreamHandler()
@@ -12,6 +19,3 @@ def test_logger():
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
-
-def pytest_terminal_summary(terminalreporter, exitstatus, config):
-    terminalreporter.write("\n")

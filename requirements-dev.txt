@@ -1,6 +1,17 @@
 -r requirements.txt
+astroid
 coverage>=5.0,<8.0
-pylint>=2.6.0,<3.0.0
+iniconfig
+isort
+lazy-object-proxy
+mccabe
+packaging
+pip
+platformdirs
+pluggy
+pylint>=2.6.0,<4.0.0
 pytest>=6.0.0,<8.0.0
-setuptools>=50.0.0,<70.0.0
 pytest-mock
+setuptools>=50.0.0,<70.0.0
+tomlkit
+wrapt

@@ -5,17 +5,22 @@
 BUILDER=@python3 -m scripts.builder
 
 env:
-	$(BUILDER) create-env
+	rm -rf .venv
+	python3 -m venv .venv
 
 install:
 	pip3 install --upgrade pip
 	pip3 install -r requirements-dev.txt
 
+uninstall:
+	pip3 uninstall -r requirements.txt -y
+	pip3 uninstall -r requirements-dev.txt -y
+
 lint:
-	$(BUILDER) run-lint
+	pylint common/ lambda_functions/ tests/ scripts/ setup.py
 
 test:
-	$(BUILDER) run-tests
+	pytest tests/
 
 package:
 	$(BUILDER) package-project

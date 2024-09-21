@@ -22,7 +22,11 @@ from common.models import Country
     ),
     # Add more test cases here
 ])
-def test_handler(mock_requests_get, lambda_event_context, mock_response_data, expected_countries, mock_configure_logger):
+def test_handler(mock_requests_get,
+                 lambda_event_context,
+                 mock_response_data,
+                 expected_countries,
+                 _mock_configure_logger):
     """
     Test the handler function.
     """
