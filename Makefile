@@ -17,9 +17,6 @@ lint:
 test:
 	$(BUILDER) run-tests
 
-freeze:
-	$(BUILDER) freeze-deps
-
 package:
 	$(BUILDER) package-project
 
