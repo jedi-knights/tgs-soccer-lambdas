@@ -16,7 +16,7 @@ jobs:
     strategy:
         fail-fast: false  # Disable fast-fail
         matrix:
-            PYTHON_VERSION: ['3.8', '3.9', '3.10', '3.11', '3.12']
+            PYTHON_VERSION: ['3.9', '3.10', '3.11', '3.12']  # I opted not to support Python 3.8 and below
 
     steps:
       - name: Checkout code
