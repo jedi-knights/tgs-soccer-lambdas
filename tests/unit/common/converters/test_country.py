@@ -5,12 +5,57 @@ import pytest
 
 from common.converters import dict_to_country
 from common.models import Country
+from common.exceptions import DataValidationError
 
 @pytest.mark.parametrize("data, expected", [
-    ({'countryID': 1, 'countryName': 'Test Country'}, Country(id=1, name='Test Country')),
-    ({'countryName': 'Test Country'}, pytest.raises(ValueError, match="Data must contain 'countryID' and 'countryName' keys")),
-    ({'countryID': 1}, pytest.raises(ValueError, match="Data must contain 'countryID' and 'countryName' keys")),
-    (None, pytest.raises(ValueError, match="Data cannot be None"))
+    (
+            None,
+            pytest.raises(DataValidationError, match="Data cannot be None")
+    ),
+    (
+            {},
+            pytest.raises(DataValidationError, match="Data must contain 'countryID' key")
+    ),
+    (
+            {'countryID': 1},
+            pytest.raises(DataValidationError, match="Data must contain 'countryName' key")
+    ),
+    (
+            {'countryID': 1, 'countryName': 'Test Country'},
+            Country(id=1, name='Test Country')
+    ),
+    (
+            {'countryID': '1', 'countryName': 'Test Country'},
+            Country(id=1, name='Test Country')
+    ),
+    (
+            {'countryID': 2, 'countryName': '    Test Country'},
+            Country(id=2, name='Test Country')
+    ),
+    (
+            {'countryID': ' 7 ', 'countryName': 'Test Country    '},
+            Country(id=7, name='Test Country')
+    ),
+    (
+            {'countryID': 13, 'countryName': '  Test Country   '},
+            Country(id=13, name='Test Country')
+    ),
+    (
+            {'countryID': 'bad', 'countryName': 'Test Country'},
+            pytest.raises(DataValidationError, match="Country validation failed")
+    ),
+    (
+            {'countryID': '1', 'countryName': ''},
+            pytest.raises(DataValidationError, match="Data must contain a non-empty 'countryName'")
+    ),
+    (
+            {'countryID': '1', 'countryName': '      '},
+            pytest.raises(DataValidationError, match="Data must contain a non-empty 'countryName'")
+    ),
+    (
+            {'countryName': 'Test Country'},
+            pytest.raises(DataValidationError, match="Data must contain 'countryID' key")
+    )
 ])
 def test_dict_to_country(data, expected):
     """

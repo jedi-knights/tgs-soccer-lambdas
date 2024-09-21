@@ -1,62 +1,69 @@
 """
-This module contains utility lambda_functions used by lambda lambda_functions.
+This module contains utility functions common to multiple lambdas.
 """
-from urllib.parse import urljoin
-from typing import Optional
 
 import requests
 
-from common.constants import ENDPOINT
 from common.logger import configure_logger
-from common.models import Country
-from lambda_functions.get_countries.app import dict_to_country
 
-logger = configure_logger(__name__)
+def fetch_data_from_api(url: str) -> dict:
+    """
+    Fetches data from the given API URL and return the JSON response.
 
-
-
-def get_countries():
-    resource = '/api/Association/get-all-countries'
-    url = urljoin(ENDPOINT, resource)
-    response = None
+    :param url: The URL of the API endpoint.
+    :return: The JSON response.
+    :raises: ValueError if the response is invalid or cannot be parsed
+    """
+    logger = configure_logger(__name__)
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
         response.raise_for_status()
     except requests.exceptions.HTTPError as http_err:
-        logger.error(f"HTTP error occurred: {http_err}")
-        return
+        logger.error("HTTP error occurred: %s", http_err)
+        raise
+    except requests.exceptions.RequestException as req_err:
+        logger.error("An error occurred: %s", req_err)
+        raise
 
     if response is None:
         logger.error("No response received")
-        return
+        raise ValueError("No response received from the API")
 
     # Check if the response status code is not 200
     if response.status_code != 200:
-        logger.error(f"Unexpected status code: {response.status_code}")
-        return
+        logger.error("Unexpected status code: %s", response.status_code)
+        raise ValueError(f"Unexpected status code: {response.status_code}")
 
     # Parse the JSON response
     try:
         json_data = response.json()
-    except ValueError as err:
-        # The response body does not contain valid JSON.
-        logger.error(f"Error parsing JSON data: {err}")
-        return
     except requests.exceptions.JSONDecodeError as err:
         # JSON decoding failed.
-        logger.error(f"Error decoding JSON data: {err}")
-        return
+        logger.error("Error decoding JSON data: %s", err)
+        raise
+    except ValueError as err:
+        # The response body does not contain valid JSON.
+        logger.error("Error parsing JSON data: %s", err)
+        raise
 
-    selected_countries = []
-    data = json_data.get('data', None)
+    return json_data
+
+
+def extract_data(json_data: dict) -> dict:
+    """
+    Extracts the 'data' property from the given JSON data.
+
+    :param json_data: The JSON data.
+    :return: The 'data' property.
+    :raises: ValueError if the 'data' property is not found
+    """
+    if json_data is None:
+        raise ValueError("JSON data cannot be None")
+
+    data = json_data.get('data')
 
     if data is None:
-        logger.error("No data property found in response")
-        return
+        raise ValueError("No 'data' property found in JSON data")
 
-    for item in data:
-        country = dict_to_country(item)
-        selected_countries.append(country)
-
-    return selected_countries
+    return data

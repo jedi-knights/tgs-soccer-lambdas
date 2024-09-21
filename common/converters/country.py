@@ -1,4 +1,11 @@
+"""
+This module contains functions for converting data to and from Country objects.
+"""
+
+from pydantic import ValidationError
+
 from common.models import Country
+from common.exceptions import DataValidationError
 
 def dict_to_country(data: dict) -> Country:
     """
@@ -8,14 +15,27 @@ def dict_to_country(data: dict) -> Country:
     :return: A Country object.
     """
     if data is None:
-        raise ValueError("Data cannot be None")
+        raise DataValidationError("Data cannot be None")
 
     country_id = data.get('countryID', None)
+
+    if country_id is None:
+        raise DataValidationError("Data must contain 'countryID' key")
+
     country_name = data.get('countryName', None)
 
-    if country_id is None or country_name is None:
-        raise ValueError("Data must contain 'countryID' and 'countryName' keys")
+    if country_name is None:
+        raise DataValidationError("Data must contain 'countryName' key")
 
-    country = Country(id=country_id, name=country_name)
+    country_name = str(country_name)
+    country_name = country_name.strip()
+
+    if len(country_name) == 0:
+        raise DataValidationError("Data must contain a non-empty 'countryName'")
+
+    try:
+        country = Country(id=country_id, name=country_name)
+    except ValidationError as exc:
+        raise DataValidationError("Country validation failed") from exc
 
     return country

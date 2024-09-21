@@ -1,6 +1,13 @@
+"""
+This module contains tests for the get_countries lambda function.
+"""
+
 from lambda_functions.get_countries.app import handler
 
 def test_handler():
+    """
+    Test the handler function.
+    """
     # Mock event and context
     event = {}
     context = {}

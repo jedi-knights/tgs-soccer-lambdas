@@ -1,14 +1,21 @@
-from common.models import Country
+"""
+Lambda function to get countries
+"""
 
-def dict_to_country(data: dict) -> Country:
-    """
-    Converts a dictionary to a Country object.
+from common.logger import configure_logger
+from common.api import get_countries
 
-    :param data: A dictionary containing country data.
-    :return: A Country object.
-    """
-    return Country(**data)
-
+logger = configure_logger(__name__)
 
 def handler(event, context):
-    return "Hello World!"
+    """
+    Lambda handler function
+
+    :param event: Lambda event
+    :param context: Lambda context
+    """
+    logger.info("Lambda event: %s", event)
+    logger.info("Lambda context: %s", context)
+    countries = get_countries()
+
+    return countries
