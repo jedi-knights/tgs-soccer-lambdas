@@ -11,8 +11,10 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 5  # Increase the timeout as needed
 
     strategy:
+        fail-fast: false  # Disable fast-fail
         matrix:
             PYTHON_VERSION: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
