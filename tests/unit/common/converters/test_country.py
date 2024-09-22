@@ -3,9 +3,9 @@ Test the common.converters.country module.
 """
 import pytest
 
-from common.converters import dict_to_country
-from common.exceptions import DataValidationError
-from common.models import Country
+from layer.python.common.converters import dict_to_country
+from layer.python.common.exceptions import DataValidationError
+from layer.python.common.models import Country
 
 @pytest.mark.parametrize("data, expected", [
     (

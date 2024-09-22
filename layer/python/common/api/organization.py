@@ -3,11 +3,11 @@ This module contains functions to interact with the TGS API to retrieve organiza
 """
 
 from urllib.parse import urljoin
-from common.constants import ENDPOINT
-from common.logger import configure_logger
-from common.models import Organization
-from common.converters import dict_to_organization
-from common.utils import fetch_data_from_api, extract_data
+from layer.python.common.constants import ENDPOINT
+from layer.python.common.logger import configure_logger
+from layer.python.common.models import Organization
+from layer.python.common.converters import dict_to_organization
+from layer.python.common.utils import fetch_data_from_api, extract_data
 
 logger = configure_logger(__name__)
 

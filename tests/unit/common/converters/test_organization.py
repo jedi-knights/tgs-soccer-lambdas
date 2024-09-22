@@ -3,9 +3,9 @@ Test the common.converters.organization module.
 """
 import pytest
 
-from common.converters import dict_to_organization
-from common.models import Organization
-from common.exceptions import DataValidationError
+from layer.python.common.converters import dict_to_organization
+from layer.python.common.models import Organization
+from layer.python.common.exceptions import DataValidationError
 
 @pytest.mark.parametrize("data, expected", [
     (

@@ -16,7 +16,7 @@ from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import PartialCredentialsError
 from botocore.exceptions import BotoCoreError
 
-from common.constants import LOG_GROUP_NAME, DEFAULT_REGION
+from layer.python.common.constants import LOG_GROUP_NAME, DEFAULT_REGION
 
 class JsonFormatter(logging.Formatter):
     """

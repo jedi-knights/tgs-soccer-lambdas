@@ -4,7 +4,7 @@ This module contains tests for the get_countries lambda function.
 import pytest
 
 from lambda_functions.get_countries.app import handler
-from common.models import Country
+from layer.python.common.models import Country
 
 @pytest.mark.handler
 @pytest.mark.parametrize("mock_response_data, expected_countries", [

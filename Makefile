@@ -17,7 +17,7 @@ uninstall:
 	pip3 uninstall -r requirements-dev.txt -y
 
 lint:
-	pylint common/ lambda_functions/ tests/ scripts/ setup.py
+	pylint layer/ lambda_functions/ tests/ scripts/ setup.py
 
 test:
 	pytest tests/

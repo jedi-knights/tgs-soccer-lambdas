@@ -3,12 +3,12 @@ This module contains functions that access the TGS API to retrieve countries.
 """
 
 from urllib.parse import urljoin
-from common.constants import ENDPOINT
-from common.exceptions import DataValidationError
-from common.logger import configure_logger
-from common.models import Country
-from common.converters import dict_to_country
-from common.utils import fetch_data_from_api, extract_data
+from layer.python.common.constants import ENDPOINT
+from layer.python.common.exceptions import DataValidationError
+from layer.python.common.logger import configure_logger
+from layer.python.common.models import Country
+from layer.python.common.converters import dict_to_country
+from layer.python.common.utils import fetch_data_from_api, extract_data
 
 logger = configure_logger(__name__)
 

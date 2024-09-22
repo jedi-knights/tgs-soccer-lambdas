@@ -2,8 +2,8 @@
 This module contains functions for converting data to and from Organization objects.
 """
 
-from common.models import Organization
-from common.exceptions import DataValidationError
+from layer.python.common.models import Organization
+from layer.python.common.exceptions import DataValidationError
 
 def dict_to_organization(data: dict) -> Organization:
     """
