@@ -89,8 +89,8 @@ def package_project():
             ]
             subprocess.run(args, check=True)
 
-        shutil.copytree("dependencies", "common", dirs_exist_ok=True)
-        shutil.make_archive("common_layer", "zip", "common")
+        shutil.copytree("dependencies", "layer/python/common", dirs_exist_ok=True)
+        shutil.make_archive("common_layer", "zip", "layer/python/common")
 
         lambda_dirs = []
         for item in os.listdir("lambda_functions"):
