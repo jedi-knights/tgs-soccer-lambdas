@@ -42,7 +42,7 @@ from common.exceptions import DataValidationError
             pytest.raises(DataValidationError, match="Data cannot be None")
     )
 ])
-def test_dict_to_organization(data, expected):
+def test_dict_to_organization(data, expected, _mock_configure_logger):
     """
     Test the dict_to_organization function.
 
