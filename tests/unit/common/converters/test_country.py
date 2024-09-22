@@ -4,8 +4,8 @@ Test the common.converters.country module.
 import pytest
 
 from common.converters import dict_to_country
-from common.models import Country
 from common.exceptions import DataValidationError
+from common.models import Country
 
 @pytest.mark.parametrize("data, expected", [
     (
@@ -63,7 +63,7 @@ def test_dict_to_country(data, expected):
 
     :param data: The data to convert.
     :param expected: The expected result.
-    :return: None
+    :param _mock_configure_logger: Mocked configure_logger function
     """
     if isinstance(expected, Country):
         country = dict_to_country(data)

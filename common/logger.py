@@ -18,7 +18,6 @@ from botocore.exceptions import BotoCoreError
 
 from common.constants import LOG_GROUP_NAME, DEFAULT_REGION
 
-
 class JsonFormatter(logging.Formatter):
     """
     Custom log formatter that outputs log records as JSON.
@@ -70,11 +69,38 @@ def create_log_group_if_not_exists(log_group_name: str,
     except ClientError as e:
         print(f"Failed to create log group '{log_group_name}': {e}")
 
-def configure_logger(name, region_name=None, aws_access_key_id=None, aws_secret_access_key=None):
+def configure_base_logger(name) -> logging.Logger:
+    """
+    Configure a logger with a StreamHandler for unit tests.
+
+    :param name: The name of the logger.
+    :return: The configured logger.
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+
+    # Create a JSON log formatter
+    formatter = JsonFormatter()
+
+    # Create a StreamHandler for standard output
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+
+    return logger
+
+
+def configure_cloud_logger(name,
+                           region_name=None,
+                           aws_access_key_id=None,
+                           aws_secret_access_key=None) -> logging.Logger:
     """
     Configure a logger with a CloudWatch handler and a StreamHandler.
 
     :param name: The name of the logger.
+    :param region_name: The AWS region name.
+    :param aws_access_key_id: The AWS access key ID.
+    :param aws_secret_access_key: The AWS secret access key.
     :return: The configured logger.
     """
 
@@ -87,16 +113,7 @@ def configure_logger(name, region_name=None, aws_access_key_id=None, aws_secret_
     if aws_secret_access_key is None:
         aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
-
-    # Create a JSON log formatter
-    formatter = JsonFormatter()
-
-    # Create a StreamHandler for standard output
-    stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
+    logger = configure_base_logger(name)
 
     # Ensure the log group exists
     create_log_group_if_not_exists(LOG_GROUP_NAME,
@@ -116,6 +133,7 @@ def configure_logger(name, region_name=None, aws_access_key_id=None, aws_secret_
             log_group=LOG_GROUP_NAME,
             boto3_client=client
         )
+        formatter = JsonFormatter()
         cloudwatch_handler.setFormatter(formatter)
         logger.addHandler(cloudwatch_handler)
     except ClientError as err:
@@ -128,5 +146,33 @@ def configure_logger(name, region_name=None, aws_access_key_id=None, aws_secret_
         logger.error("Partial AWS credentials found: %s", err)
     except BotoCoreError as err:
         logger.error("BotoCore error occurred: %s", err)
+
+    return logger
+
+def configure_test_logger(name) -> logging.Logger:
+    """
+    Configure a logger with a StreamHandler for unit tests.
+
+    :param name: The name of the logger.
+    :return: The configured logger.
+    """
+    return configure_base_logger(name)
+
+def configure_logger(name):
+    """
+    Configure a logger based on the presence of AWS credentials.
+
+    :param name: The name of the logger.
+    :param region_name: The AWS region name.
+    :return: The configured logger.
+    """
+    region_name = os.getenv('AWS_REGION', '').strip()
+    aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID', '').strip()
+    aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY', '').strip()
+
+    if region_name and aws_access_key_id and aws_secret_access_key:
+        logger = configure_cloud_logger(name, region_name, aws_access_key_id, aws_secret_access_key)
+    else:
+        logger = configure_base_logger(name)
 
     return logger

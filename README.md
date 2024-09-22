@@ -247,5 +247,7 @@ aws-lambda-soccer/
 
 ## Resources
 
+- [Define Lambda function handler in Python](https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html)
+- [AWS Lambda Function](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html)
+- [AWS Lambda API Reference](https://docs.aws.amazon.com/lambda/latest/api/welcome.html)
 - [Lambda Runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
-- 
