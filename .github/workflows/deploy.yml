@@ -45,7 +45,7 @@ jobs:
       - name: Package CloudFormation Stack
         run: |
           aws cloudformation package \
-            --template-file s3://${{ env.S3_BUCKET_NAME }}/cloudformation_templates/lambda_template.yaml \
+            --template-file cloudformation_templates/lambda_template.yaml \
             --s3-bucket ${{ env.S3_BUCKET_NAME }} \
             --output-template-file cloudformation_templates/packaged_template.yaml
         env:
@@ -66,7 +66,7 @@ jobs:
       - name: Deploy CloudFormation Stack
         run: |
           aws cloudformation deploy \
-            --template-file s3://${{ env.S3_BUCKET_NAME }}/cloudformation_templates/lambda_template.yaml \
+            --template-file cloudformation_templates/lambda_template.yaml \
             --stack-name tgs-soccer-lambda-stack \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
             --parameter-overrides S3BucketName=${{ env.S3_BUCKET_NAME }}
