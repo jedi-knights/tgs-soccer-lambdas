@@ -33,16 +33,9 @@ jobs:
           ls -l *.zip
         working-directory: .
 
-      - name: Upload ZIP files to S3
+      - name: Upload files to S3
         run: |
           aws s3 cp . s3://${{ env.S3_BUCKET_NAME }}/ --recursive --exclude "*" --include "*.zip"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-
-      - name: Upload CloudFormation templates to S3
-        run: |
           aws s3 cp cloudformation_templates/ s3://${{ env.S3_BUCKET_NAME }}/cloudformation_templates/ --recursive --exclude "*" --include "*.yaml"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -52,7 +45,7 @@ jobs:
       - name: Package CloudFormation Stack
         run: |
           aws cloudformation package \
-            --template-file cloudformation_templates/lambda_template.yaml \
+            --template-file s3://${{ env.S3_BUCKET_NAME }}/cloudformation_templates/lambda_template.yaml \
             --s3-bucket ${{ env.S3_BUCKET_NAME }} \
             --output-template-file cloudformation_templates/packaged_template.yaml
         env:
@@ -73,7 +66,7 @@ jobs:
       - name: Deploy CloudFormation Stack
         run: |
           aws cloudformation deploy \
-            --template-file cloudformation_templates/packaged_template.yaml \
+            --template-file s3://${{ env.S3_BUCKET_NAME }}/cloudformation_templates/lambda_template.yaml \
             --stack-name tgs-soccer-lambda-stack \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
             --parameter-overrides S3BucketName=${{ env.S3_BUCKET_NAME }}
