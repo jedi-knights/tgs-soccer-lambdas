@@ -57,7 +57,7 @@ from common.models import Country
             pytest.raises(DataValidationError, match="Data must contain 'countryID' key")
     )
 ])
-def test_dict_to_country(data, expected, _mock_configure_logger):
+def test_dict_to_country(data, expected):
     """
     Test the dict_to_country function.
 

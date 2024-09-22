@@ -32,15 +32,3 @@ def lambda_event_context():
     event = {}
     context = {}
     return event, context
-
-@pytest.fixture
-def _mock_configure_logger(mocker, test_logger):
-    """
-    Mock the configure_logger function
-
-    :param mocker: Pytest mocker
-    :param test_logger: Logger
-    :return: Pytest mocker
-    :raises: None
-    """
-    return mocker.patch('common.api.country.configure_logger', return_value=test_logger)

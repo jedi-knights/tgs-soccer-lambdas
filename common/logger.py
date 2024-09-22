@@ -90,11 +90,17 @@ def configure_base_logger(name) -> logging.Logger:
     return logger
 
 
-def configure_cloud_logger(name, region_name=None, aws_access_key_id=None, aws_secret_access_key=None) -> logging.Logger:
+def configure_cloud_logger(name,
+                           region_name=None,
+                           aws_access_key_id=None,
+                           aws_secret_access_key=None) -> logging.Logger:
     """
     Configure a logger with a CloudWatch handler and a StreamHandler.
 
     :param name: The name of the logger.
+    :param region_name: The AWS region name.
+    :param aws_access_key_id: The AWS access key ID.
+    :param aws_secret_access_key: The AWS secret access key.
     :return: The configured logger.
     """
 
@@ -127,6 +133,7 @@ def configure_cloud_logger(name, region_name=None, aws_access_key_id=None, aws_s
             log_group=LOG_GROUP_NAME,
             boto3_client=client
         )
+        formatter = JsonFormatter()
         cloudwatch_handler.setFormatter(formatter)
         logger.addHandler(cloudwatch_handler)
     except ClientError as err:

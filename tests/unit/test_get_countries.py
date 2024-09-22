@@ -25,8 +25,7 @@ from common.models import Country
 def test_handler(mock_requests_get,
                  lambda_event_context,
                  mock_response_data,
-                 expected_countries,
-                 _mock_configure_logger):
+                 expected_countries):
     """
     Test the handler function.
     """
