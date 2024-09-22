@@ -63,7 +63,7 @@ def test_dict_to_country(data, expected, _mock_configure_logger):
 
     :param data: The data to convert.
     :param expected: The expected result.
-    :return: None
+    :param _mock_configure_logger: Mocked configure_logger function
     """
     if isinstance(expected, Country):
         country = dict_to_country(data)

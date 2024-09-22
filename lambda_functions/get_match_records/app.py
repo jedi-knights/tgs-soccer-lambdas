@@ -6,7 +6,6 @@ from common.logger import configure_logger
 
 logger = configure_logger(__name__)
 
-
 def handler(event, context):
     """
     Lambda handler function
