@@ -1,0 +1,33 @@
+{
+  "name": "tgs-soccer-lambdas",
+  "version": "1.0.0",
+  "description": "A project containing several lambda functions for extracting Soccer data from total global sports.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "make test",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jedi-knights/tgs-soccer-lambdas.git"
+  },
+  "keywords": [
+    "tgs",
+    "soccer",
+    "lambda"
+  ],
+  "author": "Omar Crosby",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jedi-knights/tgs-soccer-lambdas/issues"
+  },
+  "homepage": "https://github.com/jedi-knights/tgs-soccer-lambdas#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "husky": "^8.0.0"
+  }
+}

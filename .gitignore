@@ -247,3 +247,4 @@ $RECYCLE.BIN/
 .vscode/
 
 dependencies/
+node_modules/
