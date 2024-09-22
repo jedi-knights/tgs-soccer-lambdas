@@ -11,6 +11,7 @@ jobs:
 
     env:
       PYTHON_VERSION: '3.12'
+      S3_BUCKET_NAME: 'tgs-soccer-lambdas-prod-09192024'
 
     steps:
       - name: Checkout code
@@ -36,13 +37,13 @@ jobs:
         run: |
           aws cloudformation package \
             --template-file cloudformation_templates/lambda_template.yaml \
-            --s3-bucket ${{ secrets.S3_BUCKET_NAME }} \
+            --s3-bucket ${{ env.S3_BUCKET_NAME }} \
             --output-template-file cloudformation_templates/packaged_template.yaml
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-east-1
-          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          S3_BUCKET_NAME: ${{ env.S3_BUCKET_NAME }}
 
       - name: Deploy CloudFormation Stack
         run: |
@@ -50,12 +51,12 @@ jobs:
             --template-file cloudformation_templates/packaged_template.yaml \
             --stack-name tgs-soccer-lambda-stack \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-            --parameter-overrides S3BucketName=${{ secrets.S3_BUCKET_NAME }}
+            --parameter-overrides S3BucketName=${{ env.S3_BUCKET_NAME }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-east-1
-          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          S3_BUCKET_NAME: ${{ env.S3_BUCKET_NAME }}
 
       - name: Cleanup
         run: |
