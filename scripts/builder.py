@@ -16,7 +16,6 @@ import subprocess
 import shutil
 
 from pathlib import Path
-from xml.dom import NotFoundErr
 
 import click
 
@@ -92,10 +91,10 @@ def package_lambda(lambda_dir: str,
         raise ValueError('The lambda directory is required.')
 
     if not os.path.isdir(lambda_dir):
-        raise ValueError('The lambda directory "%s" does not exist.', lambda_dir)
+        raise ValueError(f'The lambda directory "{lambda_dir}" does not exist.')
 
     if not os.path.isdir(dependencies_dir):
-        raise ValueError('The dependencies directory "%s" does not exist.', dependencies_dir)
+        raise ValueError(f'The dependencies directory "{dependencies_dir}" does not exist.')
 
     # Delete the staging directory if it already exists.
     if os.path.isdir(staging_dir):
