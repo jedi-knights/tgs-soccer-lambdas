@@ -16,6 +16,7 @@ import subprocess
 import shutil
 
 from pathlib import Path
+from xml.dom import NotFoundErr
 
 import click
 
@@ -72,6 +73,57 @@ def cli():
     """
     A python CLI tool to build the project.
     """
+
+
+def package_lambda(lambda_dir: str,
+                   staging_dir: str = 'staging',
+                   dependencies_dir: str = 'dependencies',
+                   delete_staging_after: bool = False) -> str:
+    """
+    This function packages a specified lambda directory into an archive.
+
+    :lamba_dir: str
+    :staging_dir: str
+    :dependencies_dir: str
+    :delete_staging_after: bool
+    :returns str archive name
+    """
+    if lambda_dir is None:
+        raise ValueError('The lambda directory is required.')
+
+    if not os.path.isdir(lambda_dir):
+        raise ValueError('The lambda directory "%s" does not exist.', lambda_dir)
+
+    if not os.path.isdir(dependencies_dir):
+        raise ValueError('The dependencies directory "%s" does not exist.', dependencies_dir)
+
+    # Delete the staging directory if it already exists.
+    if os.path.isdir(staging_dir):
+        shutil.rmtree(staging_dir)
+
+    # Create an empty staging directory
+    os.mkdir(staging_dir)
+
+    # If the dependencies directory exists then copy it into the staging directory
+    if os.path.isdir(dependencies_dir):
+        shutil.copytree(src=dependencies_dir, dst=staging_dir, dirs_exist_ok=True)
+
+    # Copy lambda directory into the staging directory.
+    shutil.copytree(src=lambda_dir, dst=staging_dir, dirs_exist_ok=True)
+
+    # Create the archive file from the staging directory.
+    archive_name = shutil.make_archive(base_name=lambda_dir, format='zip', root_dir=staging_dir)
+
+    # Problem: This is not creating the archive at the root of the project.
+    #          The archive is appearing in the 'lambda_functions' directory.
+    # I may need to move each archive after it's created unless there's a way to instruct the
+    # make_archive function to put it at the root.
+
+    if delete_staging_after:
+        # Delete the staging directory.
+        shutil.rmtree(staging_dir)
+
+    return archive_name
 
 
 @cli.command()
