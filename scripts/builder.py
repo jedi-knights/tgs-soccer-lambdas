@@ -12,6 +12,7 @@ clean the project directory.
 """
 
 import os
+import stat
 import subprocess
 import shutil
 
@@ -73,19 +74,29 @@ def cli():
     A python CLI tool to build the project.
     """
 
-
-def package_lambda(lambda_dir: str,
-                   staging_dir: str = 'staging',
-                   dependencies_dir: str = 'dependencies',
-                   delete_staging_after: bool = False) -> str:
+def find_root_dir() -> str:
     """
-    This function packages a specified lambda directory into an archive.
+    Find the root directory of the project.
 
-    :lamba_dir: str
-    :staging_dir: str
-    :dependencies_dir: str
-    :delete_staging_after: bool
-    :returns str archive name
+    :return: str
+    """
+    current_dir = os.getcwd()
+    while not os.path.exists(os.path.join(current_dir, ".git")):
+        parent_dir = os.path.dirname(current_dir)
+        if current_dir == parent_dir:
+            raise FileNotFoundError("The root directory could not be found.")
+
+        current_dir = parent_dir
+
+    return current_dir
+
+def validate_directories(lambda_dir: str, dependencies_dir: str):
+    """
+    Validate the lambda and dependencies directories.
+
+    :param lambda_dir:
+    :param dependencies_dir:
+    :return:
     """
     if lambda_dir is None:
         raise ValueError('The lambda directory is required.')
@@ -96,33 +107,174 @@ def package_lambda(lambda_dir: str,
     if not os.path.isdir(dependencies_dir):
         raise ValueError(f'The dependencies directory "{dependencies_dir}" does not exist.')
 
-    # Delete the staging directory if it already exists.
+
+def set_permissions(path: str):
+    """
+    Set POSIX file permissions for the given path.
+
+    :param path: The path to set permissions for.
+    """
+    for root, dirs, files in os.walk(path):
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            os.chmod(dir_path,
+                     stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            os.chmod(file_path,
+                     stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+
+
+def prepare_staging_directory(staging_dir: str):
+    """
+    Prepare the staging directory.
+
+    :param staging_dir:
+    :return:
+    """
     if os.path.isdir(staging_dir):
         shutil.rmtree(staging_dir)
 
-    # Create an empty staging directory
     os.mkdir(staging_dir)
+    set_permissions(staging_dir)
 
-    # If the dependencies directory exists then copy it into the staging directory
+def copy_directory(src: str, dst: str):
+    """
+    Copy the source directory to the destination directory.
+
+    :param src:
+    :param dst:
+    :return:
+    """
+    shutil.copytree(src=src, dst=dst, dirs_exist_ok=True)
+    set_permissions(dst)
+
+
+def copy_directories(lambda_dir: str, dependencies_dir: str, staging_dir: str):
+    """
+    Copy the lambda and dependencies directories into the staging directory.
+
+    :param lambda_dir:
+    :param dependencies_dir:
+    :param staging_dir:
+    :return:
+    """
     if os.path.isdir(dependencies_dir):
-        shutil.copytree(src=dependencies_dir, dst=staging_dir, dirs_exist_ok=True)
+        copy_directory(src=dependencies_dir, dst=staging_dir)
 
-    # Copy lambda directory into the staging directory.
-    shutil.copytree(src=lambda_dir, dst=staging_dir, dirs_exist_ok=True)
+    copy_directory(src=lambda_dir, dst=staging_dir)
 
-    # Create the archive file from the staging directory.
-    archive_name = shutil.make_archive(base_name=lambda_dir, format='zip', root_dir=staging_dir)
 
-    # Problem: This is not creating the archive at the root of the project.
-    #          The archive is appearing in the 'lambda_functions' directory.
-    # I may need to move each archive after it's created unless there's a way to instruct the
-    # make_archive function to put it at the root.
+def create_archive(lambda_dir: str, staging_dir: str, root_dir: str) -> str:
+    """
+    Create an archive from the lambda directory.
+
+    :param lambda_dir:
+    :param staging_dir:
+    :param root_dir:
+    :return:
+    """
+    base_name = os.path.join(root_dir, os.path.basename(lambda_dir))
+    archive_name = shutil.make_archive(base_name=base_name, format='zip', root_dir=staging_dir)
+    return archive_name
+
+def _install_dependencies(dependencies_dir: str = 'dependencies'):
+    """Install dependencies from requirements.txt to the dependencies/ directory."""
+    if os.path.exists(dependencies_dir):
+        click.echo("Dependencies directory already exists. No action taken.")
+        return
+
+    try:
+        os.makedirs(dependencies_dir)
+        args = [
+            "pip3",
+            "install",
+            "-r",
+            "requirements.txt",
+            "-t",
+            "dependencies/"
+        ]
+        subprocess.run(args, check=True)
+        click.echo("Dependencies installed successfully.")
+    except subprocess.CalledProcessError as err:
+        click.echo(f"Failed to install dependencies: {err}")
+
+
+@cli.command(name='deps')
+@click.option('--dependencies-dir', default='dependencies', help='The dependencies directory.')
+def install_dependencies(dependencies_dir: str = 'dependencies'):
+    """Install dependencies from requirements.txt to the dependencies/ directory."""
+    _install_dependencies(dependencies_dir)
+    click.echo(f"Dependencies installed successfully to '{dependencies_dir}'.")
+
+
+def _pack(lambda_dir: str,
+         staging_dir: str = 'staging',
+         dependencies_dir: str = 'dependencies',
+         delete_staging_after: bool = False,
+         is_layer: bool = False) -> str:
+    """
+    This function packages a specified lambda directory into an archive.
+
+    :param lambda_dir:
+    :param staging_dir:
+    :param dependencies_dir:
+    :param delete_staging_after:
+    :param is_layer:
+    :return:
+    """
+    if not os.path.exists(dependencies_dir):
+        _install_dependencies(dependencies_dir)
+
+    validate_directories(lambda_dir, dependencies_dir)
+    prepare_staging_directory(staging_dir)
+
+    copy_directory(lambda_dir, staging_dir)
+
+    if is_layer:
+        copy_directory(dependencies_dir, staging_dir)
+
+    root_dir = find_root_dir()
+    archive_name = create_archive(lambda_dir, staging_dir, root_dir)
 
     if delete_staging_after:
-        # Delete the staging directory.
         shutil.rmtree(staging_dir)
 
     return archive_name
+
+@cli.command()
+@click.argument('lambda_dir')
+@click.option('--staging-dir', default='staging', help='The staging directory.')
+@click.option('--dependencies-dir', default='dependencies', help='The dependencies directory.')
+@click.option('--delete-staging-after', is_flag=True, help='Delete staging directory after.')
+def pack(lambda_dir: str,
+         staging_dir: str = 'staging',
+         dependencies_dir: str = 'dependencies',
+         delete_staging_after: bool = False):
+    """
+    This function packages a specified lambda directory into an archive.
+
+    :param lambda_dir:
+    :param staging_dir:
+    :param dependencies_dir:
+    :param delete_staging_after:
+    :return:
+    """
+    if 'layer' in lambda_dir:
+        archive_name = _pack(lambda_dir,
+                             staging_dir,
+                             dependencies_dir,
+                             delete_staging_after,
+                             is_layer=True)
+        click.echo(f"Layer packaged successfully: {archive_name}")
+    else:
+        archive_name = _pack(lambda_dir,
+                             staging_dir,
+                             dependencies_dir,
+                             delete_staging_after,
+                             is_layer=False)
+        click.echo(f"Lambda packaged successfully: {archive_name}")
 
 
 @cli.command()

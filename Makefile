@@ -25,10 +25,16 @@ test:
 package:
 	$(BUILDER) package-project
 
-build:
-	$(BUILDER) build-project
+build: clean
+	$(BUILDER) deps
+	$(BUILDER) pack --delete-staging-after layer/python/common
+	$(BUILDER) pack --delete-staging-after lambda_functions/get_clubs_by_organization
+	$(BUILDER) pack --delete-staging-after lambda_functions/get_countries
+	$(BUILDER) pack --delete-staging-after lambda_functions/get_match_records
+	$(BUILDER) pack --delete-staging-after lambda_functions/get_organizations
+	$(BUILDER) pack --delete-staging-after lambda_functions/get_states
 
 clean:
 	rm -f *.zip
 	rm -rf dependencies/
-	$(BUILDER) clean-project
+

@@ -245,8 +245,23 @@ aws-lambda-soccer/
 └── requirements.txt                # Optional: top-level dependencies for all Lambda functions
 ```
 
+## Packaging
+
+Your AWS Lambda function’s code comprises a .py file containing your function’s handler code, together with any 
+additional packages and modules your code depends on. To deploy this function code to Lambda, you use a deployment 
+package. This package may either be a .zip file archive or a container image. 
+
+To create your deployment package as .zip file archive, you can use your command-line tool’s built-in .zip file 
+archive utility, or any other .zip file utility such as 7zip.
+
+Note that Lambda uses POSIX file permissions, so you may need to set permissions for the deployment package folder 
+before you create the .zip file archive.
+
 ## Resources
 
+- [Working with .zip file archives for Python Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/python-package.html)
+- [Packaging your layer content](https://docs.aws.amazon.com/lambda/latest/dg/packaging-layers.html)
+- [Working with layers for Python Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/python-layers.html)
 - [Define Lambda function handler in Python](https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html)
 - [AWS Lambda Function](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html)
 - [AWS Lambda API Reference](https://docs.aws.amazon.com/lambda/latest/api/welcome.html)
