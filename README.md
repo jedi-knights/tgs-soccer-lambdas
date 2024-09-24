@@ -259,6 +259,7 @@ before you create the .zip file archive.
 
 ## Resources
 
+- [Creating and updating Python Lambda functions using .zip files](https://docs.aws.amazon.com/lambda/latest/dg/python-package.html#python-package-create-update)
 - [Working with .zip file archives for Python Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/python-package.html)
 - [Packaging your layer content](https://docs.aws.amazon.com/lambda/latest/dg/packaging-layers.html)
 - [Working with layers for Python Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/python-layers.html)
