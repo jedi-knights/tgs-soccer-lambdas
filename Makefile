@@ -17,10 +17,10 @@ uninstall:
 	pip3 uninstall -r requirements-dev.txt -y
 
 lint:
-	pylint layers/ lambda_functions/ tests/ scripts/ setup.py
+	PYTHONPATH=layers/common pylint layers/ lambda_functions/ tests/ scripts/ setup.py
 
 test:
-	pytest tests/
+	PYTHONPATH=layers/common pytest tests/
 
 package:
 	$(BUILDER) package-project

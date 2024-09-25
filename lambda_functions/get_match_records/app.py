@@ -2,7 +2,7 @@
 Lambda function to get match records
 """
 
-from layers.common.logger import configure_logger
+from logger import configure_logger
 
 logger = configure_logger(__name__)
 

@@ -16,7 +16,7 @@ Resources:
         S3Bucket: !Ref S3BucketName
         S3Key: common_layer.zip
       CompatibleRuntimes: 
-        - python3.9
+        - python3.12
 
   # IAM Role for Lambda Functions
   LambdaExecutionRole:
