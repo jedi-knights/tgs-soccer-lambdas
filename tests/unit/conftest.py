@@ -1,5 +1,5 @@
 """
-Pytest configuration file for unit tests
+Pytest configuration file for unit events
 """
 
 import pytest
@@ -17,7 +17,7 @@ def mock_requests_get(mocker):
         mock_response = mocker.Mock()
         mock_response.json.return_value = mock_response_data
         mock_response.status_code = status_code
-        mocker.patch('layer.python.common.utils.requests.get', return_value=mock_response)
+        mocker.patch('layers.common.utils.requests.get', return_value=mock_response)
 
     return _mock_requests_get
 

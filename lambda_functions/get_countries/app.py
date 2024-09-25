@@ -2,8 +2,8 @@
 Lambda function to get countries
 """
 
-from layer.python.common.logger import configure_logger
-from layer.python.common.api import get_countries
+from layers.common.logger import configure_logger
+from layers.common.api import get_countries
 
 logger = configure_logger(__name__)
 

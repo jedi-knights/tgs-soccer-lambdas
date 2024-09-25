@@ -5,7 +5,7 @@ It provides a set of commands to:
 create a virtual environment,
 install dependencies,
 run linting,
-run tests,
+run events,
 freeze dependencies,
 package the project, and
 clean the project directory.
@@ -211,9 +211,9 @@ def install_dependencies(dependencies_dir: str = 'dependencies'):
 
 def _pack(lambda_dir: str,
          staging_dir: str = 'staging',
+         python_version: str = 'python3.12',
          dependencies_dir: str = 'dependencies',
-         delete_staging_after: bool = False,
-         is_layer: bool = False) -> str:
+         delete_staging_after: bool = False) -> str:
     """
     This function packages a specified lambda directory into an archive.
 
@@ -224,6 +224,8 @@ def _pack(lambda_dir: str,
     :param is_layer:
     :return:
     """
+    is_layer = 'layers' in lambda_dir
+
     if not os.path.exists(dependencies_dir):
         _install_dependencies(dependencies_dir)
 
@@ -232,10 +234,17 @@ def _pack(lambda_dir: str,
 
     copy_directory(lambda_dir, staging_dir)
 
-    if is_layer:
-        copy_directory(dependencies_dir, staging_dir)
-
     root_dir = find_root_dir()
+
+    copy_directory(lambda_dir, staging_dir)
+
+    if is_layer:
+        # handle the layers case
+        python_dir = os.path.join(staging_dir, 'python')
+        site_packages = os.path.join(python_dir, 'lib', python_version, 'site-packages')
+        os.makedirs(site_packages)
+        copy_directory(dependencies_dir, site_packages)
+
     archive_name = create_archive(lambda_dir, staging_dir, root_dir)
 
     if delete_staging_after:
@@ -247,10 +256,12 @@ def _pack(lambda_dir: str,
 @click.argument('lambda_dir')
 @click.option('--staging-dir', default='staging', help='The staging directory.')
 @click.option('--dependencies-dir', default='dependencies', help='The dependencies directory.')
+@click.option('--python-version', default='python3.12', help='The Python version.')
 @click.option('--delete-staging-after', is_flag=True, help='Delete staging directory after.')
 def pack(lambda_dir: str,
          staging_dir: str = 'staging',
          dependencies_dir: str = 'dependencies',
+         python_version: str = 'python3.12',
          delete_staging_after: bool = False):
     """
     This function packages a specified lambda directory into an archive.
@@ -261,20 +272,12 @@ def pack(lambda_dir: str,
     :param delete_staging_after:
     :return:
     """
-    if 'layer' in lambda_dir:
-        archive_name = _pack(lambda_dir,
-                             staging_dir,
-                             dependencies_dir,
-                             delete_staging_after,
-                             is_layer=True)
-        click.echo(f"Layer packaged successfully: {archive_name}")
-    else:
-        archive_name = _pack(lambda_dir,
-                             staging_dir,
-                             dependencies_dir,
-                             delete_staging_after,
-                             is_layer=False)
-        click.echo(f"Lambda packaged successfully: {archive_name}")
+    archive_name = _pack(lambda_dir,
+                         staging_dir,
+                         python_version,
+                         dependencies_dir,
+                         delete_staging_after)
+    click.echo(f"Lambda packaged successfully: {archive_name}")
 
 
 @cli.command()
@@ -292,8 +295,8 @@ def package_project():
             ]
             subprocess.run(args, check=True)
 
-        shutil.copytree("dependencies", "layer/python/common", dirs_exist_ok=True)
-        shutil.make_archive("common_layer", "zip", "layer/python/common")
+        shutil.copytree("dependencies", "layers/python/common", dirs_exist_ok=True)
+        shutil.make_archive("common_layer", "zip", "layers/python/common")
 
         lambda_dirs = []
         for item in os.listdir("lambda_functions"):

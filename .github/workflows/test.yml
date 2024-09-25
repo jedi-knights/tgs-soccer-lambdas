@@ -31,7 +31,7 @@ jobs:
           make install
         working-directory: .
 
-      - name: Run tests
+      - name: Run events
         run: |
           pytest tests/
         working-directory: .

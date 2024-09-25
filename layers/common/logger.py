@@ -16,7 +16,7 @@ from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import PartialCredentialsError
 from botocore.exceptions import BotoCoreError
 
-from layer.python.common.constants import LOG_GROUP_NAME, DEFAULT_REGION
+from layers.common.constants import LOG_GROUP_NAME, DEFAULT_REGION
 
 class JsonFormatter(logging.Formatter):
     """
@@ -71,7 +71,7 @@ def create_log_group_if_not_exists(log_group_name: str,
 
 def configure_base_logger(name) -> logging.Logger:
     """
-    Configure a logger with a StreamHandler for unit tests.
+    Configure a logger with a StreamHandler for unit events.
 
     :param name: The name of the logger.
     :return: The configured logger.
@@ -151,7 +151,7 @@ def configure_cloud_logger(name,
 
 def configure_test_logger(name) -> logging.Logger:
     """
-    Configure a logger with a StreamHandler for unit tests.
+    Configure a logger with a StreamHandler for unit events.
 
     :param name: The name of the logger.
     :return: The configured logger.

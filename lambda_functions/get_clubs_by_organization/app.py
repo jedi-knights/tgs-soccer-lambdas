@@ -2,7 +2,7 @@
 Lambda function to get clubs by organization
 """
 
-from layer.python.common.logger import configure_logger
+from layers.common.logger import configure_logger
 
 logger = configure_logger(__name__)
 

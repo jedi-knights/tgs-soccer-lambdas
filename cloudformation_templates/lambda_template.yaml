@@ -11,7 +11,7 @@ Resources:
   MyCommonLayer:
     Type: AWS::Lambda::LayerVersion
     Properties: 
-      LayerName: common-code-layer
+      LayerName: common-code-layers
       Content:
         S3Bucket: !Ref S3BucketName
         S3Key: common_layer.zip

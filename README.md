@@ -146,7 +146,7 @@ Test a single function by invoking it directly with a test event. An event is a 
 Run functions locally and invoke them with the `sam local invoke` command.
 
 ```bash
-tgs-soccer-lambdas$ sam local invoke HelloWorldFunction --event events/event.json
+tgs-soccer-lambdas$ sam local invoke HelloWorldFunction --event events/empty.json
 ```
 
 The SAM CLI can also emulate your application's API. Use the `sam local start-api` to run the API locally on port 3000.
@@ -187,12 +187,12 @@ You can find more information and examples about filtering Lambda function logs 
 Tests are defined in the `tests` folder in this project. Use PIP to install the test dependencies and run tests.
 
 ```bash
-tgs-soccer-lambdas$ pip install -r tests/requirements.txt --user
+tgs-soccer-lambdas$ pip install -r events/requirements.txt --user
 # unit test
-tgs-soccer-lambdas$ python -m pytest tests/unit -v
+tgs-soccer-lambdas$ python -m pytest events/unit -v
 # integration test, requiring deploying the stack first.
 # Create the env variable AWS_SAM_STACK_NAME with the name of the stack we are testing
-tgs-soccer-lambdas$ AWS_SAM_STACK_NAME="tgs-soccer-lambdas" python -m pytest tests/integration -v
+tgs-soccer-lambdas$ AWS_SAM_STACK_NAME="tgs-soccer-lambdas" python -m pytest events/integration -v
 ```
 
 ## Cleanup

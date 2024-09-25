@@ -17,7 +17,7 @@ uninstall:
 	pip3 uninstall -r requirements-dev.txt -y
 
 lint:
-	pylint layer/ lambda_functions/ tests/ scripts/ setup.py
+	pylint layers/ lambda_functions/ tests/ scripts/ setup.py
 
 test:
 	pytest tests/
@@ -27,7 +27,7 @@ package:
 
 build: clean
 	$(BUILDER) deps
-	$(BUILDER) pack --delete-staging-after layer/python/common
+	$(BUILDER) pack --delete-staging-after layers/common
 	$(BUILDER) pack --delete-staging-after lambda_functions/get_clubs_by_organization
 	$(BUILDER) pack --delete-staging-after lambda_functions/get_countries
 	$(BUILDER) pack --delete-staging-after lambda_functions/get_match_records
