@@ -4,7 +4,7 @@ This module contains utility functions common to multiple lambdas.
 
 import requests
 
-from layers.common.logger import configure_logger
+from logger import configure_logger
 
 def fetch_data_from_api(url: str) -> dict:
     """

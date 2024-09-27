@@ -4,8 +4,8 @@ This module contains functions for converting data to and from Country objects.
 
 from pydantic import ValidationError
 
-from layers.common.models import Country
-from layers.common.exceptions import DataValidationError
+from models import Country
+from exceptions import DataValidationError
 
 def dict_to_country(data: dict) -> Country:
     """
