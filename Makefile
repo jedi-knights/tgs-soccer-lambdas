@@ -36,5 +36,6 @@ build: clean
 
 clean:
 	rm -f *.zip
+	rm -rf staging/
 	rm -rf dependencies/
 

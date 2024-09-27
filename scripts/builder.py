@@ -232,15 +232,13 @@ def _pack(lambda_dir: str,
     validate_directories(lambda_dir, dependencies_dir)
     prepare_staging_directory(staging_dir)
 
-    copy_directory(lambda_dir, staging_dir)
-
     root_dir = find_root_dir()
 
-    copy_directory(lambda_dir, staging_dir)
+    python_dir = os.path.join(staging_dir, 'python')
+    copy_directory(lambda_dir, python_dir)
 
     if is_layer:
         # handle the layers case
-        python_dir = os.path.join(staging_dir, 'python')
         site_packages = os.path.join(python_dir, 'lib', python_version, 'site-packages')
         os.makedirs(site_packages)
         copy_directory(dependencies_dir, site_packages)
