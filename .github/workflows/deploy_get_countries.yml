@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - '.github/workflows/deploy_get_countries.yml'
+      - 'cloudformation/lambda/templates/get_countries.yaml'
+      - 'cloudformation/lambda/parameters/get_countries_parameters.json'
       - 'lambda_functions/get_countries/**'
   workflow_dispatch:
 
