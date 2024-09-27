@@ -46,6 +46,12 @@ jobs:
             --s3-bucket ${{ env.S3_BUCKET_NAME }} \
             --output-template-file cloudformation/lambda/packaged_templates/template.yaml
 
+      - name: Delete Failed Stack (if exists)
+        run: aws cloudformation delete-stack --stack-name ${{ env.STACK_NAME }} || true
+
+      - name: Wait for Stack Deletion
+        run: aws cloudformation wait stack-delete-complete --stack-name ${{ env.STACK_NAME }} || true
+
       - name: Deploy CloudFormation Stack
         run: |
           aws cloudformation deploy \
