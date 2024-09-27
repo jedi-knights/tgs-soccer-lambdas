@@ -24,6 +24,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create Packaged Templates Directory
+        run: mkdir -p cloudformation/lambda/packaged_templates
+
       - name: Upload CloudFormation Template Files to S3
         run: |
           aws s3 cp \
