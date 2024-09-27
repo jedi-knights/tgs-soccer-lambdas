@@ -1,6 +1,9 @@
 """
 Lambda function to get countries
 """
+import sys
+
+print(sys.path)  # Check if /opt/python is in the path
 
 from logger import configure_logger
 from api import get_countries
