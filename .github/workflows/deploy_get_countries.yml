@@ -46,7 +46,7 @@ jobs:
             --s3-bucket ${{ env.S3_BUCKET_NAME }} \
             --output-template-file cloudformation/lambda/packaged_templates/template.yaml
 
-      - name: Delete Failed Stack (if exists)
+      - name: Conditionally Delete Failed Stack
         run: aws cloudformation delete-stack --stack-name ${{ env.STACK_NAME }} || true
 
       - name: Wait for Stack Deletion
@@ -59,3 +59,10 @@ jobs:
             --stack-name ${{ env.STACK_NAME }} \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
             --parameter-overrides file://cloudformation/lambda/parameters/get_countries_parameters.json
+
+      - name: Display Stack Events on Failure
+        if: failure()
+        run: |
+          aws cloudformation describe-stack-events \
+            --stack-name ${{ env.STACK_NAME }} \
+            --output yaml
