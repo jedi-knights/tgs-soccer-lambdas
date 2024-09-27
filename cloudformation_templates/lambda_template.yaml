@@ -75,8 +75,6 @@ Resources:
       Runtime: python3.12
       MemorySize: 128
       Timeout: 15
-      Layers:
-        - !Ref MyCommonLayer
       Environment:
         Variables:
           ENV: production
@@ -115,8 +113,6 @@ Resources:
       Runtime: python3.12
       MemorySize: 128
       Timeout: 15
-      Layers:
-        - !Ref MyCommonLayer
       Environment:
         Variables:
           ENV: production
