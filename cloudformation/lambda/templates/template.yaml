@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Generic template to deploy a Lambda function
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: Name of the S3 bucket that holds the Lambda deployment packages
+  LambdaFunctionName:
+    Type: String
+    Description: Name of the Lambda function
+  LambdaFunctionKey:
+    Type: String
+    Description: S3 key for the Lambda function deployment package
+  LambdaHandler:
+    Type: String
+    Description: Lambda function handler
+  LambdaRuntime:
+    Type: String
+    Description: Lambda function runtime
+    Default: python3.12
+  LambdaMemorySize:
+    Type: Number
+    Description: Lambda function memory size
+    Default: 128
+  LambdaTimeout:
+    Type: Number
+    Description: Lambda function timeout
+    Default: 15
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaBasicExecution
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Handler: !Ref LambdaHandler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: !Ref LambdaFunctionKey
+      Runtime: !Ref LambdaRuntime
+      MemorySize: !Ref LambdaMemorySize
+      Timeout: !Ref LambdaTimeout
+      Environment:
+        Variables:
+          ENV: production
+          LOG_LEVEL: info
+
+Outputs:
+  LambdaFunctionArn:
+    Description: "ARN for the Lambda function"
+    Value: !GetAtt LambdaFunction.Arn

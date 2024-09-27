@@ -1,0 +1,9 @@
+{
+  "S3BucketName": "your-s3-bucket-name",
+  "LambdaFunctionName": "TGSGetOrganizations",
+  "LambdaFunctionKey": "get_organizations.zip",
+  "LambdaHandler": "app.handler",
+  "LambdaRuntime": "python3.12",
+  "LambdaMemorySize": 128,
+  "LambdaTimeout": 15
+}
