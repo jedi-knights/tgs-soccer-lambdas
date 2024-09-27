@@ -26,5 +26,9 @@
   {
     "ParameterKey": "LambdaTimeout",
     "ParameterValue": "15"
+  },
+  {
+    "ParameterKey": "LambdaExecutionRoleArn",
+    "ParameterValue": "arn:aws:iam::194227249447:role/LambdaExecutionRole"
   }
 ]

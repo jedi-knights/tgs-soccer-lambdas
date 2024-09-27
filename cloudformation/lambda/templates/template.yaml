@@ -26,6 +26,9 @@ Parameters:
     Type: Number
     Description: Lambda function timeout
     Default: 15
+  LambdaExecutionRoleArn:
+    Type: String
+    Description: ARN of the existing Lambda execution role
 
 Resources:
   LambdaExecutionRoleStack:
@@ -38,7 +41,7 @@ Resources:
     Properties:
       FunctionName: !Ref LambdaFunctionName
       Handler: !Ref LambdaHandler
-      Role: !GetAtt LambdaExecutionRoleStack.Outputs.LambdaExecutionRoleArn
+      Role: !Ref LambdaExecutionRoleArn
       Code:
         S3Bucket: !Ref S3BucketName
         S3Key: !Ref LambdaFunctionKey
