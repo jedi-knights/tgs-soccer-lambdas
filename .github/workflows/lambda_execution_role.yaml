@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'cloudformation/lambda/templates/lambda_execution_role.yaml'
+      - '.github/workflows/lambda_execution_role.yaml'
   workflow_dispatch:
 
 jobs:
