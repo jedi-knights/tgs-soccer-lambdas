@@ -1,4 +1,4 @@
-name: Deploy Get Countries Lambda
+name: Create Lambda Execution Role
 
 on:
   push:
