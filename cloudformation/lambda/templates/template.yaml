@@ -31,11 +31,6 @@ Parameters:
     Description: ARN of the existing Lambda execution role
 
 Resources:
-  LambdaExecutionRoleStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub 'https://s3.amazonaws.com/${S3BucketName}/cloudformation/lambda/templates/lambda_execution_role.yaml'
-
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
