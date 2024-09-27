@@ -1,0 +1,68 @@
+name: Deploy Get Organizations Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy_get_organizations.yml'
+      - 'cloudformation/lambda/templates/get_organizations.yaml'
+      - 'cloudformation/lambda/parameters/get_organizations_parameters.json'
+      - 'lambda_functions/get_organizations/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      S3_BUCKET_NAME: 'tgs-soccer-lambdas-prod-09192024'
+      STACK_NAME: 'tgs-soccer-lambda-stack-organizations'
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-east-1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Packaged Templates Directory
+        run: mkdir -p cloudformation/lambda/packaged_templates
+
+      - name: Upload CloudFormation Template Files to S3
+        run: |
+          aws s3 cp \
+            cloudformation/lambda \
+            s3://${{ env.S3_BUCKET_NAME }}/cloudformation/lambda \
+            --recursive \
+            --exclude "*" \
+            --include "*.yaml" \
+            --include "*.json"
+
+      - name: Package CloudFormation Stack
+        run: |
+          aws cloudformation package \
+            --template-file cloudformation/lambda/templates/template.yaml \
+            --s3-bucket ${{ env.S3_BUCKET_NAME }} \
+            --output-template-file cloudformation/lambda/packaged_templates/template.yaml
+
+      - name: Conditionally Delete Failed Stack
+        run: aws cloudformation delete-stack --stack-name ${{ env.STACK_NAME }} || true
+
+      - name: Wait for Stack Deletion
+        run: aws cloudformation wait stack-delete-complete --stack-name ${{ env.STACK_NAME }} || true
+
+      - name: Deploy CloudFormation Stack
+        run: |
+          aws cloudformation deploy \
+            --template-file cloudformation/lambda/packaged_templates/template.yaml \
+            --stack-name ${{ env.STACK_NAME }} \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
+            --parameter-overrides file://cloudformation/lambda/parameters/get_organizations_parameters.json
+
+      - name: Display Stack Events on Failure
+        if: failure()
+        run: |
+          aws cloudformation describe-stack-events \
+            --stack-name ${{ env.STACK_NAME }} \
+            --output yaml

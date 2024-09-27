@@ -1,9 +1,34 @@
-{
-  "S3BucketName": "your-s3-bucket-name",
-  "LambdaFunctionName": "TGSGetOrganizations",
-  "LambdaFunctionKey": "get_organizations.zip",
-  "LambdaHandler": "app.handler",
-  "LambdaRuntime": "python3.12",
-  "LambdaMemorySize": 128,
-  "LambdaTimeout": 15
-}
+[
+  {
+    "ParameterKey": "S3BucketName",
+    "ParameterValue": "tgs-soccer-lambdas-prod-09192024"
+  },
+  {
+    "ParameterKey": "LambdaFunctionName",
+    "ParameterValue": "TGSGetOrganizations"
+  },
+  {
+    "ParameterKey": "LambdaFunctionKey",
+    "ParameterValue": "get_organizations.zip"
+  },
+  {
+    "ParameterKey": "LambdaHandler",
+    "ParameterValue": "app.handler"
+  },
+  {
+    "ParameterKey": "LambdaRuntime",
+    "ParameterValue": "python3.12"
+  },
+  {
+    "ParameterKey": "LambdaMemorySize",
+    "ParameterValue": "128"
+  },
+  {
+    "ParameterKey": "LambdaTimeout",
+    "ParameterValue": "15"
+  },
+  {
+    "ParameterKey": "LambdaExecutionRoleArn",
+    "ParameterValue": "arn:aws:iam::194227249447:role/LambdaExecutionRole"
+  }
+]
