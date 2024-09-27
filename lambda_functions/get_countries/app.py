@@ -19,7 +19,7 @@ url = parsed_result.path
 
 def handler(event, context):
     """
-    Lambda handler function
+    This Lambda function retrieves a list of countries from the TGS API.
 
     :param event: Lambda event
     :param context: Lambda context
