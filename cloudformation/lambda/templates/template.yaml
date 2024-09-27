@@ -28,35 +28,17 @@ Parameters:
     Default: 15
 
 Resources:
-  LambdaExecutionRole:
-    Type: AWS::IAM::Role
+  LambdaExecutionRoleStack:
+    Type: AWS::CloudFormation::Stack
     Properties:
-      RoleName: LambdaExecutionRole
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: LambdaBasicExecution
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: "*"
+      TemplateURL: !Sub 'https://s3.amazonaws.com/${S3BucketName}/cloudformation/lambda/templates/lambda_execution_role.yaml'
 
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: !Ref LambdaFunctionName
       Handler: !Ref LambdaHandler
-      Role: !GetAtt LambdaExecutionRole.Arn
+      Role: !GetAtt LambdaExecutionRoleStack.Outputs.LambdaExecutionRoleArn
       Code:
         S3Bucket: !Ref S3BucketName
         S3Key: !Ref LambdaFunctionKey
