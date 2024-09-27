@@ -15,7 +15,7 @@ RESOURCE = '/api/Association/get-all-countries'
 
 parsed_result = urlparse(urljoin(ENDPOINT, RESOURCE))
 host = parsed_result.netloc
-url = parsed_result.path
+resource = parsed_result.path
 
 def handler(event, context):
     """
@@ -27,11 +27,11 @@ def handler(event, context):
     logger.info("Lambda event: %s", json.dumps(event))
     logger.info("Lambda context: %s", context)
     logger.info("Host: %s", host)
-    logger.info("URL: %s", url)
+    logger.info("Resource: %s", resource)
 
     try:
         connection = http.client.HTTPSConnection(host)
-        connection.request('GET', url)
+        connection.request('GET', resource)
         response = connection.getresponse()
 
         if response.status != 200:
@@ -49,7 +49,6 @@ def handler(event, context):
         raise
 
     return countries
-
 
 if __name__ == "__main__":
     result = handler({}, None)
