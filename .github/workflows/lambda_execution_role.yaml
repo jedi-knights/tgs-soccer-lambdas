@@ -1,0 +1,37 @@
+name: Deploy Get Countries Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'cloudformation/lambda/templates/lambda_execution_role.yaml'
+  workflow_dispatch:
+
+jobs:
+  create-role:
+    runs-on: ubuntu-latest
+
+    env:
+      S3_BUCKET_NAME: 'tgs-soccer-lambdas-prod-09192024'
+      ROLE_STACK_NAME: 'tgs-soccer-lambda-role-stack'
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-east-1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload Role Template to S3
+        run: |
+          aws s3 cp \
+            cloudformation/lambda/templates/lambda_execution_role.yaml \
+            s3://${{ env.S3_BUCKET_NAME }}/cloudformation/lambda/templates/lambda_execution_role.yaml
+
+      - name: Deploy Lambda Execution Role
+        run: |
+          aws cloudformation deploy \
+            --template-file cloudformation/lambda/templates/lambda_execution_role.yaml \
+            --stack-name ${{ env.ROLE_STACK_NAME }} \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
