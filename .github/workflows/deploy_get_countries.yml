@@ -50,4 +50,4 @@ jobs:
             --template-file cloudformation/lambda/packaged_templates/template.yaml \
             --stack-name ${{ env.STACK_NAME }} \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-            --parameter-overrides file://cloudformation/lambda/parameters/getcountries_parameters.json
+            --parameter-overrides file://cloudformation/lambda/parameters/get_countries_parameters.json
