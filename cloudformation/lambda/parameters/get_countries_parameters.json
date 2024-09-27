@@ -1,9 +1,30 @@
-{
-  "S3BucketName": "your-s3-bucket-name",
-  "LambdaFunctionName": "TGSGetCountries",
-  "LambdaFunctionKey": "get_countries.zip",
-  "LambdaHandler": "app.handler",
-  "LambdaRuntime": "python3.12",
-  "LambdaMemorySize": 128,
-  "LambdaTimeout": 15
-}
+[
+  {
+    "ParameterKey": "S3BucketName",
+    "ParameterValue": "tgs-soccer-lambdas-prod-09192024"
+  },
+  {
+    "ParameterKey": "LambdaFunctionName",
+    "ParameterValue": "TGSGetCountries"
+  },
+  {
+    "ParameterKey": "LambdaFunctionKey",
+    "ParameterValue": "get_countries.zip"
+  },
+  {
+    "ParameterKey": "LambdaHandler",
+    "ParameterValue": "app.handler"
+  },
+  {
+    "ParameterKey": "LambdaRuntime",
+    "ParameterValue": "python3.12"
+  },
+  {
+    "ParameterKey": "LambdaMemorySize",
+    "ParameterValue": "128"
+  },
+  {
+    "ParameterKey": "LambdaTimeout",
+    "ParameterValue": "15"
+  }
+]
